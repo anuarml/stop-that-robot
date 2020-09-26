@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Context } from "./lib";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import "./App.css";
+import { AppState } from "./types/appTypes";
+import { ControlContainer, StatsContainer } from "./containers";
 
-function App() {
+const App = () => {
+  const data = { x: 0, y: 0, crashed: false };
+
+  const [robotData, setRobotData] = useState(data);
+
+  const updateRobotData = (updatedRobotData: Object) => {
+    setRobotData((prevState) => ({
+      ...prevState,
+      ...updatedRobotData,
+    }));
+  };
+
+  const state: AppState = {
+    robotData,
+    updateRobotData,
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Context.Provider value={state}>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={ControlContainer} />
+          <Route exact path="/stats" component={StatsContainer} />
+        </Switch>
+      </Router>
+    </Context.Provider>
   );
-}
+};
 
 export default App;
