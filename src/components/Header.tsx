@@ -24,6 +24,7 @@ export const Header = () => {
                 to="/"
                 className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
                 tabIndex={2}
+                data-function="control-link"
               >
                 Control
               </Link>
@@ -32,6 +33,7 @@ export const Header = () => {
                 className="ml-10 font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
                 onClick={headerContext.handlePageChange}
                 tabIndex={3}
+                data-function="stats-link"
               >
                 Stats
               </Link>

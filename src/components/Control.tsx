@@ -8,13 +8,17 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
   const robotState: RobotState = useContext(RobotStateContext);
 
   return (
-    <div className="relative bg-white overflow-hidden">
+    <div
+      className="relative bg-white overflow-hidden"
+      data-function="control-page"
+    >
       <Header />
       <div className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32 grid">
         {pen.width > 0 && pen.height > 0 && (
           <div
             style={pen}
             className="border place-self-center sm:mt-10 bg-gray-800"
+            data-function="robot-pen"
           >
             <img
               src={robotImage}
@@ -29,6 +33,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
         <main
           className="mx-auto sm:mt-12 sm:px-6 md:mt-10 xl:mt-10"
           onKeyDown={keysListener}
+          data-function="buttons-section"
         >
           <div className="lg:grid">
             <div
@@ -37,6 +42,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
             >
               <div className="mt-3 text-base text-gray-500 sm:max-w-lg sm:mx-auto sm:text-center">
                 <button
+                  data-function="on-button"
                   onClick={robot.turnOn}
                   type="submit"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"
@@ -44,6 +50,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
                   Turn On
                 </button>
                 <button
+                  data-function="off-button"
                   onClick={robot.turnOff}
                   type="submit"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"
@@ -53,6 +60,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
               </div>
               <div className="mt-1 text-base text-gray-500 sm:max-w-lg sm:mx-auto sm:text-center">
                 <button
+                  data-function="up-button"
                   onClick={robot.moveUp}
                   type="submit"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"
@@ -62,6 +70,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
               </div>
               <div className="mt-1 text-base text-gray-500 sm:max-w-lg sm:mx-auto sm:text-center">
                 <button
+                  data-function="left-button"
                   onClick={robot.moveLeft}
                   type="submit"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"
@@ -69,6 +78,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
                   Left
                 </button>
                 <button
+                  data-function="right-button"
                   onClick={robot.moveRight}
                   type="submit"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"
@@ -78,6 +88,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
               </div>
               <div className="mt-1 text-base text-gray-500 sm:max-w-lg sm:mx-auto sm:text-center">
                 <button
+                  data-function="down-button"
                   onClick={robot.moveDown}
                   type="submit"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"
@@ -87,6 +98,7 @@ export const Control = ({ robot, pen, keysListener }: ControlProps) => {
               </div>
               <div className="mt-1 mb-3 text-base text-gray-500 sm:max-w-lg sm:mx-auto sm:text-center">
                 <button
+                  data-function="reset-button"
                   onClick={robot.reset}
                   type="reset"
                   className="m-2 w-full px-6 py-3 border border-transparent text-base leading-6 font-medium rounded-md text-white bg-orange-500 shadow-sm hover:bg-orange-600 focus:outline-none focus:border-gray-900 focus:shadow-outline-gray active:bg-gray-900 transition duration-150 ease-in-out sm:mt-5 sm:flex-shrink-0 sm:inline-flex sm:items-center sm:w-auto"

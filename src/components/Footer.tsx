@@ -8,6 +8,7 @@ export const Footer = () => {
           <a
             href="https://www.linkedin.com/in/anuar-morales-luna-195758121/"
             className="text-gray-400 hover:text-gray-500"
+            data-function="linkedIn-link"
           >
             <span className="sr-only">LinkedIn</span>
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
@@ -21,6 +22,7 @@ export const Footer = () => {
           <a
             href="https://github.com/anuarml"
             className="ml-6 text-gray-400 hover:text-gray-500"
+            data-function="github-link"
           >
             <span className="sr-only">GitHub</span>
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
