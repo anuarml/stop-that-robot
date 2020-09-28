@@ -1,10 +1,17 @@
-export interface AppState {
+export interface RobotState {
   robotData: RobotData;
   updateRobotData: (updatedRobotData: RobotData) => void;
 }
 
-export interface ControlContainerState {
+export interface HeaderContext {
+  robotData: RobotData;
+  updateRobotData: (updatedRobotData: RobotData) => void;
+}
+
+export interface ControlProps {
   robot: Robot;
+  pen: Pen;
+  keysListener: () => void;
 }
 
 export interface Robot {
@@ -15,14 +22,16 @@ export interface Robot {
   moveLeft: () => void;
   moveUp: () => void;
   moveDown: () => void;
+  speed: number;
+  size: number;
 }
 
 export interface RobotData {
-  xPosition: number;
-  yPosition: number;
-  maxXPosition?: number;
-  maxYPosition?: number;
-  crashed: Boolean;
+  xPosition?: number;
+  yPosition?: number;
+  xCoordinate?: number;
+  yCoordinate?: number;
+  crashed: boolean;
 }
 
 export interface Pen {

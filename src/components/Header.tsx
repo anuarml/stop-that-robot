@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import rapidRoboticsLogo from "../assets/rapidRoboticsLogo.png";
+import { HeaderContext } from "../lib";
 
 export const Header = () => {
+  const headerContext: any = useContext(HeaderContext);
+
   return (
     <div>
-      <div className="relative pt-6 pb-16 md:pb-20 lg:pb-24 xl:pb-32">
+      <div className="relative pt-6">
         <nav className="relative max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6">
           <div className="flex items-center flex-1">
             <div className="flex items-center justify-between w-full md:w-auto">
-              <Link to="/" aria-label="Home">
+              <Link to="/" aria-label="Home" tabIndex={1}>
                 <img
                   src={rapidRoboticsLogo}
                   style={{ width: 150, height: 50 }}
@@ -20,12 +23,15 @@ export const Header = () => {
               <Link
                 to="/"
                 className="font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
+                tabIndex={2}
               >
                 Control
               </Link>
               <Link
                 to="/stats"
                 className="ml-10 font-medium text-gray-500 hover:text-gray-900 transition duration-150 ease-in-out"
+                onClick={headerContext.handlePageChange}
+                tabIndex={3}
               >
                 Stats
               </Link>

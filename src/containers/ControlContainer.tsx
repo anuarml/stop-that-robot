@@ -1,14 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { Control } from "../components";
 import * as RobotApi from "../api/RobotApi.js";
-import {
-  ControlContainerState,
-  Pen,
-  Robot,
-  AppState,
-  RobotData,
-} from "../types/appTypes";
-import { RobotStateContext } from "../lib";
+import { Pen, RobotState, RobotData } from "../types/appTypes";
+import { RobotStateContext, HeaderContext } from "../lib";
 
 export const ControlContainer = () => {
   /*
@@ -21,14 +15,15 @@ export const ControlContainer = () => {
   const upDirection: number = 4.71239;
   const downDirection: number = 1.5708;
   const penStartingSize: Pen = { width: 0, height: 0 };
-  const robotState: AppState = useContext(RobotStateContext);
+  const robotState: RobotState = useContext(RobotStateContext);
   let robotStartingXPosition: number = 0;
   let robotStartingYPosition: number = 0;
   let robotMaxXPosition: number = 0;
   let robotMaxYPosition: number = 0;
+  let robotMinXPosition: number = 0;
+  let robotMinYPosition: number = 0;
   let isRobotOn: boolean = false;
-  let isRobotCrashed: boolean = false;
-  let hasRobotMoved: boolean = false;
+  let isRobotCrashed: boolean = robotState.robotData.crashed;
 
   const [pen, setPen] = useState(penStartingSize);
 
@@ -40,45 +35,59 @@ export const ControlContainer = () => {
   };
 
   /* 
-    Calculate the Robots starting position by taking in count the Pen's size 
-  
+    Calculate the Robot's staring, maximum and minimum positions 
+    by taking in count the Pen's size, the Robot's size and 
+    the size of the walls of the Pen
   */
-  // TODO: Add useEffect to avoid using many of the constants from above
-  /*useEffect(() => {
-    calculateRobotStartingPosition(penStartingSize);
-  }, [pen]);*/
 
-  const calculateRobotStartingPosition = (penSize: Pen): void => {
-    robotMaxXPosition = penSize.width - robot.size;
-    robotMaxYPosition = penSize.height - robot.size;
+  const calculateRobotPositionValue = (penSize: Pen): void => {
+    robotMaxXPosition = penSize.width - robot.size - 2;
+    robotMaxYPosition = penSize.height - robot.size - 2;
+    robotMinXPosition = penSize.width + robot.size + 2;
+    robotMinYPosition = penSize.height + robot.size + 2;
     robotStartingXPosition = penSize.width / 2;
     robotStartingYPosition = penSize.height / 2;
     const robotStartingPosition: RobotData = {
       xPosition: robotStartingXPosition,
       yPosition: robotStartingYPosition,
-      maxXPosition: robotMaxXPosition,
-      maxYPosition: robotMaxYPosition,
       crashed: false,
     };
     robotState.updateRobotData(robotStartingPosition);
   };
 
-  const robotListener = (x: number, y: number, crashed: Boolean): void => {
+  /* 
+    Calculate the Robot's current position and updating 
+    the Robot's data to move it around the Pen
+  */
+
+  const robotListener = (x: number, y: number, crashed: boolean): void => {
     if (isRobotOn) {
       const robotXPosition: number = x + robotStartingXPosition;
       const robotYPosition: number = y + robotStartingYPosition;
       const robotPosition: RobotData = {
-        xPosition: robotXPosition,
-        yPosition: robotYPosition,
+        xPosition: Math.round(robotXPosition),
+        yPosition: Math.round(robotYPosition),
+        xCoordinate: Math.round(x),
+        yCoordinate: Math.round(y),
         crashed: crashed,
       };
-      if (robotXPosition < robotMaxXPosition) {
-        robotState.updateRobotData(robotPosition);
-      }
       if (crashed) {
         turnOffRobot();
         isRobotCrashed = true;
         window.alert("Your robot has crashed please reset it");
+      }
+      /* Validation needed so that when the Robot
+        is crashed with the call, it stop repainting
+        so that it can be observed that the Robot is
+        against the wall
+      */
+      if (
+        robotMaxXPosition > robotXPosition &&
+        robotXPosition <= robotMinXPosition &&
+        robotMaxYPosition > robotYPosition &&
+        robotYPosition <= robotMinYPosition
+      ) {
+        robotState.updateRobotData(robotPosition);
       }
     }
   };
@@ -89,7 +98,7 @@ export const ControlContainer = () => {
         const penSize = RobotApi.on(robotListener);
         updatePen(penSize);
         isRobotOn = true;
-        calculateRobotStartingPosition(penSize);
+        calculateRobotPositionValue(penSize);
       } else {
         window.alert("Your robot has crashed please reset it");
       }
@@ -100,7 +109,7 @@ export const ControlContainer = () => {
 
   const turnOffRobot = (): void => {
     if (isRobotOn) {
-      RobotApi.command(0, 0);
+      stopRobot();
       RobotApi.off(robotListener);
       isRobotOn = false;
     } else {
@@ -111,7 +120,6 @@ export const ControlContainer = () => {
   const moveRobot = (speed: number, direction: number): void => {
     if (isRobotOn) {
       RobotApi.command(speed, direction);
-      //hasRobotMoved = true;
     } else {
       window.alert("You need to turn on the robot");
     }
@@ -133,15 +141,29 @@ export const ControlContainer = () => {
     moveRobot(robot.speed, downDirection);
   };
 
+  const stopRobot = (): void => {
+    RobotApi.command(0, 0);
+  };
+
   const resetRobot = (): void => {
-    if (isRobotCrashed) {
-      const penSize = RobotApi.reset();
-      updatePen(penSize);
-      calculateRobotStartingPosition(penSize);
-      isRobotCrashed = false;
-    } else {
-      window.alert("Your robot hasn't crashed, there is no need to reset it");
-    }
+    const penSize = RobotApi.reset();
+    updatePen(penSize);
+    calculateRobotPositionValue(penSize);
+    stopRobot();
+    RobotApi.off(robotListener);
+    isRobotCrashed = false;
+    isRobotOn = false;
+  };
+
+  /* 
+    Stop the robot and power it off after changing
+    pages so that the stats page can show the current
+    robot data without changing
+  */
+  const handlePageChange = (): void => {
+    stopRobot();
+    RobotApi.off(robotListener);
+    isRobotOn = false;
   };
 
   const [robot, setRobot] = useState({
@@ -156,12 +178,29 @@ export const ControlContainer = () => {
     size: 1,
   });
 
-  const updateRobot = (updatedRobot: any) => {
-    setRobot((prevState: any) => ({
-      ...prevState,
-      ...updatedRobot,
-    }));
+  const headerContext: any = {
+    handlePageChange,
   };
 
-  return <Control robot={robot} pen={pen} />;
+  /* 
+    Listener function so that the user can 
+    move the Robot with the keyboard
+  */
+  const keysListener = (event: any) => {
+    if (event.keyCode == "38") {
+      robot.moveUp();
+    } else if (event.keyCode == "40") {
+      robot.moveDown();
+    } else if (event.keyCode == "37") {
+      robot.moveLeft();
+    } else if (event.keyCode == "39") {
+      robot.moveRight();
+    }
+  };
+
+  return (
+    <HeaderContext.Provider value={headerContext}>
+      <Control robot={robot} pen={pen} keysListener={keysListener} />;
+    </HeaderContext.Provider>
+  );
 };
