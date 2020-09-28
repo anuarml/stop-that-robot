@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
 
-export const Context = createContext({
+export const RobotStateContext = createContext({
   robotData: {},
-  updateRobotData: (updatedRobotData: any) => {},
+  updateRobotData: () => {},
 });

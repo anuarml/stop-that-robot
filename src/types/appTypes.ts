@@ -5,23 +5,27 @@ export interface AppState {
 
 export interface ControlContainerState {
   robot: Robot;
-  updateRobot: (updatedRobot: Robot) => void;
 }
 
 export interface Robot {
-  start: () => Pen;
-  stop: () => void;
-  move: (speed: Number, direction: Number) => void;
-  reset: () => Pen;
+  turnOn: () => void;
+  turnOff: () => void;
+  reset: () => void;
+  moveRight: () => void;
+  moveLeft: () => void;
+  moveUp: () => void;
+  moveDown: () => void;
 }
 
 export interface RobotData {
-  x: Number;
-  y: Number;
+  xPosition: number;
+  yPosition: number;
+  maxXPosition?: number;
+  maxYPosition?: number;
   crashed: Boolean;
 }
 
 export interface Pen {
-  width: Number;
-  height: Number;
+  width: number;
+  height: number;
 }
